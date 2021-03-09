@@ -58,7 +58,9 @@ class Board(object):
                     counter = counter + 1
                 if (i-1) > -1 and (j+1) < self.dim  and self.board[i-1][j+1] == "x":  
                     counter = counter + 1           
-                self.board[i][j] = str(counter)                                        
+                self.board[i][j] = str(counter)
+    def get_loc(self,row,col):
+        return self.board[row][col]                                        
 if __name__ == '__main__':
     dimension = int(input("Enter Dimension: "))
     mine_num = int(input("Enter Mine number: "))
