@@ -33,8 +33,12 @@ class Agent(object):
         res=b.get_loc(r, c)
         if(res!="x"):
             self.board[r][c].clue = int(res)
+            self.board[r][c].isSafe = True
+            self.board[r][c].isCovered = False
         else:
             self.board[r][c].clue = -1
+            self.board[r][c].isSafe = False
+            self.board[r][c].isCovered = False
     def num_covered_neigbors(self,r,c):
         if (r-1) > -1 and self.board[r-1][c].isCovered:
             self.board[r][c].num_covered=self.board[r][c].num_covered +1
@@ -57,15 +61,15 @@ class Agent(object):
         if (r-1) > -1 and self.board[r-1][c].isSafe:
             self.board[r][c].num_safe=self.board[r][c].num_safe+1
         if (r+1) < self.dim and self.board[r+1][c].isSafe:
-           self.board[r][c].num_safe=self.board[r][c].num_safe+1
+            self.board[r][c].num_safe=self.board[r][c].num_safe+1
         if (c-1) > -1 and self.board[r][c-1].isSafe:
-           self.board[r][c].num_safe=self.board[r][c].num_safe+1
+            self.board[r][c].num_safe=self.board[r][c].num_safe+1
         if (c+1) < self.dim and self.board[r][c+1].isSafe: 
             self.board[r][c].num_safe=self.board[r][c].num_safe+1
         if (r+1) < self.dim and (c+1) < self.dim and self.board[r+1][c+1].isSafe:
             self.board[r][c].num_safe=self.board[r][c].num_safe+1
         if (r+1) < self.dim and (c-1) > -1 and self.board[r+1][c-1].isSafe:
-           self.board[r][c].num_safe=self.board[r][c].num_safe+1
+            self.board[r][c].num_safe=self.board[r][c].num_safe+1
         if (r-1) > -1 and (c-1) > -1 and self.board[r-1][c-1].isSafe:
             self.board[r][c].num_safe=self.board[r][c].num_safe+1
         if (r-1) > -1 and (c+1) < self.dim  and self.board[r-1][c+1].isSafe:
@@ -137,25 +141,22 @@ class Agent(object):
             curr_sqr.isCovered = False
             self.update_query(r,c,b)
             curr = self.board[r][c].clue
-            if curr == -1:
+            if curr == -1 and r==0 and c==0:
                 k = random.randint(1,3)
                 if(k==1):
-                    #safe_list.append(self.board[0][1])
                     self.update_query(0,1,b)
                 elif k == 2:
-                    #safe_list.append(self.board[1][0])
                     self.update_query(1,0,b)
                 elif k == 3:
-                    #safe_list.append(self.board[1][1])
                     self.update_query(1,1,b)
                 reveal_mine = reveal_mine + 1
-            else:
-               self.board[r][c].isSafe = True 
-               covered = self.num_covered_neigbors(r, c)
-               rev_safe_square = self.num_safe_squares(r, c)
-               total_neigbor = self.get_num_neigbor(r, c)
-               if (total_neigbor - curr) == covered:
-                self.mark_unhide_neighbor(r, c,0)
+            elif curr != -1:
+                self.board[r][c].isSafe = True 
+                covered = self.num_covered_neigbors(r, c)
+                rev_safe_square = self.num_safe_squares(r, c)
+                total_neigbor = self.get_num_neigbor(r, c)
+                if (total_neigbor - curr) == covered:
+                    self.mark_unhide_neighbor(r, c, 0)
                 #TODO: Update all neighbors
                 #TODO: Add Neighbors to next_loc_list[]
                 #I think it can be done in the same method
