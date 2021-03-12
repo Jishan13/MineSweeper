@@ -96,40 +96,65 @@ class Agent(object):
         return counter    
     # flag = 0 means safe
     # flag = 1 means mine 
-    def mark_unhide_neighbor(self,i,j,flag):
-        if (i-1) > -1 :
+    def mark_unhide_neighbor(self,i,j,flag,next_list,b):
+        unhide_counter=0
+        if (i-1) > -1 and self.board[i-1][j].isCovered:
             if flag == 0:
                 self.board[i-1][j].isSafe = True
+                self.update_query(i-1, j, b)
+                next_list.append(self.board[i-1][j])
             self.board[i-1][j].isCovered = False
-        if (i+1) < self.dim :
+            unhide_counter = unhide_counter+1
+        if (i+1) < self.dim and self.board[i+1][j].isCovered:
             if flag == 0:
                 self.board[i+1][j].isSafe = True
+                self.update_query(i+1, j, b)
+                next_list.append(self.board[i+1][j])
             self.board[i+1][j].isCovered = False
-        if (j-1) > -1:
+            unhide_counter = unhide_counter+1
+        if (j-1) > -1 and self.board[i][j-1].isCovered:
             if flag == 0:
                 self.board[i][j-1].isSafe = True
+                self.update_query(i, j-1, b)
+                next_list.append(self.board[i][j-1])
             self.board[i][j-1].isCovered = False
-        if (j+1) < self.dim : 
+            unhide_counter = unhide_counter+1
+        if (j+1) < self.dim and self.board[i][j+1].isCovered: 
             if flag==0:
                 self.board[i][j+1].isSafe = True
+                self.update_query(i,j+1, b)
+                next_list.append(self.board[i][j+1])
             self.board[i][j+1].isCovered = False
-        if (i+1) < self.dim and (j+1) < self.dim :
+            unhide_counter = unhide_counter+1
+        if (i+1) < self.dim and (j+1) < self.dim and self.board[i+1][j+1].isCovered:
             if flag == 0:
                 self.board[i+1][j+1].isSafe = True
+                self.update_query(i+1,j+1, b)
+                next_list.append(self.board[i+1][j+1])
             self.board[i+1][j+1].isCovered = False
-        if (i+1) < self.dim and (j-1) > -1 :
+            unhide_counter = unhide_counter+1
+        if (i+1) < self.dim and (j-1) > -1 and self.board[i+1][j-1].isCovered:
             if flag == 0:
                 self.board[i+1][j-1].isSafe = True
+                self.update_query(i+1,j-1, b)
+                next_list.append(self.board[i+1][j-1])
             self.board[i+1][j-1].isCovered = False
-        if (i-1) > -1 and (j-1) > -1:
+            unhide_counter = unhide_counter+1
+        if (i-1) > -1 and (j-1) > -1 and self.board[i-1][j-1].isCovered:
             if flag == 0:
                 self.board[i-1][j-1].isSafe = True
+                self.update_query(i-1,j-1, b)
+                next_list.append(self.board[i-1][j-1])
             self.board[i-1][j-1].isCovered = False
-        if (i-1) > -1 and (j+1) < self.dim :
+            unhide_counter = unhide_counter+1
+        if (i-1) > -1 and (j+1) < self.dim and self.board[i-1][j+1].isCovered:
             if flag == 0:
                 self.board[i][j+1].isSafe = True
+                self.update_query(i-1,j+1, b)
+                next_list.append(self.board[i-1][j+1])
             self.board[i-1][j+1].isCovered = False
-                
+            unhide_counter = unhide_counter+1
+        return unhide_counter        
     def basic_agent(self, b):
         next_loc_list = []
         next_loc_list.append(self.board[0][0])
@@ -156,10 +181,8 @@ class Agent(object):
                 rev_safe_square = self.num_safe_squares(r, c)
                 total_neigbor = self.get_num_neigbor(r, c)
                 if (total_neigbor - curr) == covered:
-                    self.mark_unhide_neighbor(r, c, 0)
-                #TODO: Update all neighbors
-                #TODO: Add Neighbors to next_loc_list[]
-                #I think it can be done in the same method
+                    num_unhidden = self.mark_unhide_neighbor(r, c, 0,next_loc_list,b)
+                    total_hidden = total_hidden - num_unhidden
             
             
             
