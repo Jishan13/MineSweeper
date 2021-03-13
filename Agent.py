@@ -39,6 +39,7 @@ class Agent(object):
             self.board[r][c].clue = -1
             self.board[r][c].isSafe = False
             self.board[r][c].isCovered = False
+            
     def num_covered_neigbors(self,r,c):
         if (r-1) > -1 and self.board[r-1][c].isCovered:
             self.board[r][c].num_covered=self.board[r][c].num_covered +1
@@ -57,6 +58,7 @@ class Agent(object):
         if (r-1) > -1 and (c+1) < self.dim  and self.board[r-1][c+1].isCovered:
             self.board[r][c].num_covered=self.board[r][c].num_covered +1
         return self.board[r][c].num_covered
+    
     def num_safe_squares(self,r,c):
         if (r-1) > -1 and self.board[r-1][c].isSafe:
             self.board[r][c].num_safe=self.board[r][c].num_safe+1
@@ -75,6 +77,7 @@ class Agent(object):
         if (r-1) > -1 and (c+1) < self.dim  and self.board[r-1][c+1].isSafe:
             self.board[r][c].num_safe=self.board[r][c].num_safe+1
         return self.board[r][c].num_safe
+    
     def get_num_neigbor(self,i,j):
         counter = 0
         if (i-1) > -1 :
