@@ -5,7 +5,7 @@ Created on Mar 9, 2021
 '''
 import Environment as en
 import random
-
+import CSP
 class Square(object):
     def __init__(self,num_covered,num_safe,num_mines,clue, row, col,isCovered):
         self.row = row
@@ -14,7 +14,8 @@ class Square(object):
         self.num_safe = num_safe
         self.num_mines = num_mines #total num of interpreted + accidentally opened mines
         self.isSafe = False
-        self.clue = clue    
+        self.clue = clue 
+        self.variable = ''
         ''' clue = 0 means covered square
         clue = -1 means mine
         clue = some integer means real clue use it!!'''
@@ -72,30 +73,40 @@ class Agent(object):
     def num_covered_neigbors(self,r,c):
         covered_neighbors = []
         self.board[r][c].num_covered=0
-        if (r-1) > -1 and self.board[r-1][c].isCovered:
-            self.board[r][c].num_covered=self.board[r][c].num_covered +1
-            covered_neighbors.append(self.board[r-1][c])
-        if (r+1) < self.dim and self.board[r+1][c].isCovered:
-            self.board[r][c].num_covered=self.board[r][c].num_covered +1
-            covered_neighbors.append(self.board[r+1][c])
-        if (c-1) > -1 and self.board[r][c-1].isCovered:
-            self.board[r][c].num_covered=self.board[r][c].num_covered +1
-            covered_neighbors.append(self.board[r][c-1])
-        if (c+1) < self.dim and self.board[r][c+1].isCovered: 
-            self.board[r][c].num_covered=self.board[r][c].num_covered +1
-            covered_neighbors.append(self.board[r][c+1])
-        if (r+1) < self.dim and (c+1) < self.dim and self.board[r+1][c+1].isCovered:
-            self.board[r][c].num_covered=self.board[r][c].num_covered +1
-            covered_neighbors.append(self.board[r+1][c+1])
-        if (r+1) < self.dim and (c-1) > -1 and self.board[r+1][c-1].isCovered:
-            self.board[r][c].num_covered=self.board[r][c].num_covered +1
-            covered_neighbors.append(self.board[r+1][c-1])
         if (r-1) > -1 and (c-1) > -1 and self.board[r-1][c-1].isCovered:
             self.board[r][c].num_covered=self.board[r][c].num_covered +1
             covered_neighbors.append(self.board[r-1][c-1])
+            
+        if (r-1) > -1 and self.board[r-1][c].isCovered:
+            self.board[r][c].num_covered=self.board[r][c].num_covered +1
+            covered_neighbors.append(self.board[r-1][c])
+            
         if (r-1) > -1 and (c+1) < self.dim  and self.board[r-1][c+1].isCovered:
             self.board[r][c].num_covered=self.board[r][c].num_covered +1
             covered_neighbors.append(self.board[r-1][c+1])
+            
+        if (c-1) > -1 and self.board[r][c-1].isCovered:
+            self.board[r][c].num_covered=self.board[r][c].num_covered +1
+            covered_neighbors.append(self.board[r][c-1])
+            
+        if (c+1) < self.dim and self.board[r][c+1].isCovered: 
+            self.board[r][c].num_covered=self.board[r][c].num_covered +1
+            covered_neighbors.append(self.board[r][c+1])
+        
+        if (r+1) < self.dim and (c-1) > -1 and self.board[r+1][c-1].isCovered:
+            self.board[r][c].num_covered=self.board[r][c].num_covered +1
+            covered_neighbors.append(self.board[r+1][c-1])
+        
+        if (r+1) < self.dim and self.board[r+1][c].isCovered:
+            self.board[r][c].num_covered=self.board[r][c].num_covered +1
+            covered_neighbors.append(self.board[r+1][c])
+        
+        if (r+1) < self.dim and (c+1) < self.dim and self.board[r+1][c+1].isCovered:
+            self.board[r][c].num_covered=self.board[r][c].num_covered +1
+            covered_neighbors.append(self.board[r+1][c+1])
+        
+        
+        
         return self.board[r][c].num_covered, covered_neighbors
     
     def num_safe_squares(self,r,c, flag):
@@ -183,35 +194,35 @@ class Agent(object):
     def mark_unhide_neighbor(self,i,j,b):
         unhide_counter=0
         if (i-1) > -1 and self.board[i-1][j].isCovered:
-            print(f'Checking Neighbor: ({i-1}, {j})')
+            #print(f'Checking Neighbor: ({i-1}, {j})')
             self.update_query(i-1, j, b)
             unhide_counter = unhide_counter+1
         if (i+1) < self.dim and self.board[i+1][j].isCovered:
-            print(f'Checking Neighbor: ({i+1}, {j})')
+            #print(f'Checking Neighbor: ({i+1}, {j})')
             self.update_query(i+1, j, b)
             unhide_counter = unhide_counter+1
         if (j-1) > -1 and self.board[i][j-1].isCovered:
-            print(f'Checking Neighbor: ({i}, {j-1})')
+            #print(f'Checking Neighbor: ({i}, {j-1})')
             self.update_query(i, j-1, b)
             unhide_counter = unhide_counter+1
         if (j+1) < self.dim and self.board[i][j+1].isCovered: 
-            print(f'Checking Neighbor: ({i}, {j+1})')
+            #print(f'Checking Neighbor: ({i}, {j+1})')
             self.update_query(i,j+1, b)
             unhide_counter = unhide_counter+1
         if (i+1) < self.dim and (j+1) < self.dim and self.board[i+1][j+1].isCovered:
-            print(f'Checking Neighbor: ({i+1}, {j+1})')
+            #print(f'Checking Neighbor: ({i+1}, {j+1})')
             self.update_query(i+1,j+1, b)
             unhide_counter = unhide_counter+1
         if (i+1) < self.dim and (j-1) > -1 and self.board[i+1][j-1].isCovered:
-            print(f'Checking Neighbor: ({i+1}, {j-1})')
+            #print(f'Checking Neighbor: ({i+1}, {j-1})')
             self.update_query(i+1,j-1, b)
             unhide_counter = unhide_counter+1
         if (i-1) > -1 and (j-1) > -1 and self.board[i-1][j-1].isCovered:
-            print(f'Checking Neighbor: ({i-1}, {j-1})')
+            #print(f'Checking Neighbor: ({i-1}, {j-1})')
             self.update_query(i-1,j-1, b)
             unhide_counter = unhide_counter+1
         if (i-1) > -1 and (j+1) < self.dim and self.board[i-1][j+1].isCovered:
-            print(f'Checking Neighbor: ({i-1}, {j+1})')
+            #print(f'Checking Neighbor: ({i-1}, {j+1})')
             self.update_query(i-1,j+1, b)
             unhide_counter = unhide_counter+1
         return unhide_counter   
@@ -245,7 +256,7 @@ class Agent(object):
         safe_neighbors = self.num_safe_squares(r, c, 1)
         total_neighbor = self.get_num_neigbor(r, c)
         
-        print(f'current: {curr}, num_mines: {self.board[r][c].num_mines}, hidden: {hidden}, safe_neighbors: {safe_neighbors}, total_neighbor: {total_neighbor}')
+        #print(f'current: {curr}, num_mines: {self.board[r][c].num_mines}, hidden: {hidden}, safe_neighbors: {safe_neighbors}, total_neighbor: {total_neighbor}')
         #self.board[r][c].num_mines = self.board[r][c].num_mines + (total_neighbor - safe_neighbors)
         
         if (curr-self.board[r][c].num_mines) == hidden: #all hidden neighbors are mines
@@ -260,9 +271,9 @@ class Agent(object):
         
         next_loc = self.board[0][0]
         
-        
+        k = 0
         while self.total_hidden > 0:
-            
+            k+=1
             curr_sqr = next_loc
             r,c = curr_sqr.get_loc()
             self.update_query(r,c,b)
@@ -275,18 +286,20 @@ class Agent(object):
                 print("Num unhidden in agent: " + str(num_unhidden))
                 self.total_hidden -= num_unhidden
             print("Total hidden after: " +str(self.total_hidden))
-            self.print_board()
+            #self.print_board()
+            if(k==12):
+                break
             while (self.total_hidden>0):
                 loc = random.randint(0,self.dim**2 - 1)
                 r = loc // (self.dim)
                 c = loc % (self.dim)
-                print(f'next ({r}, {c})')
-                print(self.board[r][c].isCovered==True)
+                #print(f'next ({r}, {c})')
+                #print(self.board[r][c].isCovered==True)
                 if self.board[r][c].isCovered==True:
-                    print (f'yes ({r}, {c}) is covered')
+                    #print (f'yes ({r}, {c}) is covered')
                     next_loc = self.board[r][c]
-                    print(type(next_loc))
-                    print(next_loc.get_loc())
+                    #print(type(next_loc))
+                    #print(next_loc.get_loc())
                     break
         print("Score = "+str(self.score))            
 if __name__ == '__main__':
@@ -294,4 +307,7 @@ if __name__ == '__main__':
     mine_num = int(input("Enter Mine number: "))
     b = en.Board(dimension,mine_num)
     a = Agent(dimension)
-    a.basic_agent(b)        
+    a.basic_agent(b) 
+    CSP.create_variables(a, a.board)  
+    #print((CSP.decToBinary(2))) 
+    print()  
