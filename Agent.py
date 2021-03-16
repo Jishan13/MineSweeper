@@ -105,56 +105,56 @@ class Agent(object):
                 self.board[r][c].num_safe=self.board[r][c].num_safe+1
             elif flag==0 and self.board[r-1][c].isCovered==False:
                 self.board[r-1][c].num_mines += 1  
-                num_unhidden+=self.basic_agent_algo(r-1, c, self.board[r-1][c].clue) 
+                #num_unhidden+=self.basic_agent_algo(r-1, c, self.board[r-1][c].clue) 
                     
         if (r+1) < self.dim and self.board[r+1][c].isSafe:
             if flag==1:
                 self.board[r][c].num_safe=self.board[r][c].num_safe+1
             elif flag==0 and self.board[r+1][c].isCovered==False:
                 self.board[r+1][c].num_mines += 1
-                num_unhidden+=self.basic_agent_algo(r+1, c, self.board[r+1][c].clue) 
+                #num_unhidden+=self.basic_agent_algo(r+1, c, self.board[r+1][c].clue) 
                 #num_unhidden+=1  
         if (c-1) > -1 and self.board[r][c-1].isSafe:
             if flag==1:
                 self.board[r][c].num_safe=self.board[r][c].num_safe+1
             elif flag==0 and self.board[r][c-1].isCovered==False:
                 self.board[r][c-1].num_mines += 1
-                num_unhidden+=self.basic_agent_algo(r, c-1, self.board[r][c-1].clue)  
+                #num_unhidden+=self.basic_agent_algo(r, c-1, self.board[r][c-1].clue)  
                 #num_unhidden+=1 
         if (c+1) < self.dim and self.board[r][c+1].isSafe: 
             if flag==1:
                 self.board[r][c].num_safe=self.board[r][c].num_safe+1
             elif flag==0 and self.board[r][c+1].isCovered==False:
                 self.board[r][c+1].num_mines += 1
-                num_unhidden+=self.basic_agent_algo(r, c+1, self.board[r][c+1].clue)  
+                #num_unhidden+=self.basic_agent_algo(r, c+1, self.board[r][c+1].clue)  
                 #num_unhidden+=1 
         if (r+1) < self.dim and (c+1) < self.dim and self.board[r+1][c+1].isSafe:
             if flag==1:
                 self.board[r][c].num_safe=self.board[r][c].num_safe+1
             elif flag==0 and self.board[r+1][c+1].isCovered==False:
                 self.board[r+1][c+1].num_mines += 1
-                num_unhidden+=self.basic_agent_algo(r+1, c+1, self.board[r+1][c+1].clue) 
+                #num_unhidden+=self.basic_agent_algo(r+1, c+1, self.board[r+1][c+1].clue) 
                 #num_unhidden+=1  
         if (r+1) < self.dim and (c-1) > -1 and self.board[r+1][c-1].isSafe:
             if flag==1:
                 self.board[r][c].num_safe=self.board[r][c].num_safe+1
             elif flag==0 and self.board[r+1][c-1].isCovered==False:
                 self.board[r+1][c-1].num_mines += 1
-                num_unhidden+=self.basic_agent_algo(r+1, c-1, self.board[r+1][c-1].clue) 
+                #num_unhidden+=self.basic_agent_algo(r+1, c-1, self.board[r+1][c-1].clue) 
                 #num_unhidden+=1  
         if (r-1) > -1 and (c-1) > -1 and self.board[r-1][c-1].isSafe:
             if flag==1:
                 self.board[r][c].num_safe=self.board[r][c].num_safe+1
             elif flag==0 and self.board[r-1][c-1].isCovered==False:
                 self.board[r-1][c-1].num_mines += 1
-                num_unhidden+=self.basic_agent_algo(r-1, c-1, self.board[r-1][c-1].clue)  
+                #num_unhidden+=self.basic_agent_algo(r-1, c-1, self.board[r-1][c-1].clue)  
                 #num_unhidden+=1 
         if (r-1) > -1 and (c+1) < self.dim  and self.board[r-1][c+1].isSafe:
             if flag==1:
                 self.board[r][c].num_safe=self.board[r][c].num_safe+1
             elif flag==0 and self.board[r-1][c+1].isCovered==False:
                 self.board[r-1][c+1].num_mines += 1
-                num_unhidden+=self.basic_agent_algo(r-1, c+1, self.board[r-1][c+1].clue)  
+                #num_unhidden+=self.basic_agent_algo(r-1, c+1, self.board[r-1][c+1].clue)  
                 #num_unhidden+=1 
         self.total_hidden -= num_unhidden
         return self.board[r][c].num_safe
