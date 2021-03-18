@@ -16,6 +16,7 @@ class Square(object):
         self.isSafe = False
         self.clue = clue 
         self.variable = ''
+        #self.value = 1
         ''' clue = 0 means covered square
         clue = -1 means mine
         clue = some integer means real clue use it!!'''
@@ -287,6 +288,7 @@ class Agent(object):
                 self.total_hidden -= num_unhidden
             print("Total hidden after: " +str(self.total_hidden))
             #self.print_board()
+            CSP.improved_agent(self, self.board)
             if(k==12):
                 break
             while (self.total_hidden>0):

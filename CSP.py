@@ -17,6 +17,7 @@ create_variables()
 import Agent
 
 def create_variables(agent, board):
+    agent.print_board()
     data = {}
     #num = 0
     for r in range(agent.dim):
@@ -38,10 +39,10 @@ def create_variables(agent, board):
                 if (variable_tuple):
                     data[board[r][c]] = { variable_tuple: [] }
                     
-    assign_values(data, board)
-    print(data)
+    keyList = assign_values(data, board)
+    #print(data)
     print()  
-    return data
+    return data, keyList
 
 def decToBinary(n):
     return bin(n).replace("0b", "")
@@ -92,7 +93,16 @@ def assign_values(data,a):
             num_variables = len(k)
             temp[k] = (generateSolutions(num_variables, summ))
             for sol in temp[k]:
-                print("sol: ", end =" ")
-                print(sol) 
+                #print("sol: ", end =" ")
+                #print(sol) 
                 fringe.append(sol)
-    print(fringe)    
+    print(fringe)
+    return keyList
+def improved_agent(agent, board):
+    fringe, KeyList = create_variables(agent, board)
+    solutions =[]
+    for key in KeyList:
+        solutions.append(fringe.pop(key))
+        
+    
+        
