@@ -15,6 +15,7 @@ create_variables()
 '''
 
 import Agent
+import random
 
 def create_variables(agent, board):
     agent.print_board()
@@ -99,10 +100,64 @@ def assign_values(data,a):
     print(fringe)
     return keyList
 def improved_agent(agent, board):
-    fringe, KeyList = create_variables(agent, board)
-    solutions =[]
-    for key in KeyList:
-        solutions.append(fringe.pop(key))
-        
+    '''
+    solutions = { (x01,x02,x03): {curr: (0,0,1), used: [(0,1,0)], left: [(1,0,0)] } , (x02, x03, x04): (1,0,0), (x05, x04): (1,0)    }
+    data = { Square at (1,5):  { (x01, x03, x05): [ (solution combos), (), .... ] }, "Square at 1,6":  }
+    '''
+    fringe, keys = create_variables(agent, board)
+    solutions = {}
+    while(fringe!={}):
+        const_dict = fringe.pop(keys[0])
+        keys.pop(0)
+        key_list = const_dict.keys()
+        curr, used, leftover = findSolution(const_dict, solutions, key_list)
+        if(used!=[]):
+            solutions[key_list[0]]  = {"curr": curr, "used": used, "leftover": leftover}
+        else:
+            #backtracking
+def findSolution(const_dict, solutions, key_list):
+    constraint = key_list[0]
+    const_list = list(constraint)
+    combos = const_dict[constraint]  
+    used = []
+    leftover = combos
+    curr = ()
+    curr_sol = {} #{x01: 0, x02: 1, x03: 1, ....} value of variables in dict solutions
+    if (solutions == {}):
+        i = random.choice(combos)
+        curr = i
+        used.append(i)
+        leftover.remove(i)
+    else:
+        sol_keys = solutions.keys()
+        for sol in sol_keys:
+            sol = list(sol)
+        for var in const_list: # [x02, x03,...]
+            for sol in sol_keys: #[ [x01,x02,x03], [x01,x02,x03], [x01,x02,x03], ..]
+                if var in sol:
+                    index = sol.index(var)
+                    curr_dic = solutions[tuple(sol)]
+                    curr_sol[var] = curr_dic["curr"][index]
+        var_indices = {} #indices of variables in constraint tuple
+        overlapping_vars = curr_sol.keys()
+        for var in const_list:
+            if var in curr_sol:
+                index = const_list.index(var)
+                var_indices[var] = index
+        possible_sols = []
+        for tup in combos:
+            possible_sols.append(tup)
+            for var in overlapping_vars:
+                if (tup[var_indices[var]] != curr_sol[var]):
+                    possible_sols.remove(tup)
+                    break
+        if(possible_sols!=[]):
+            i = random.choice(possible_sols)
+            curr = i
+            used.append(i)
+            leftover.remove(i) 
     
+    return curr, used, leftover    
+                        
+            
         

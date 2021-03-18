@@ -289,6 +289,7 @@ class Agent(object):
             print("Total hidden after: " +str(self.total_hidden))
             #self.print_board()
             CSP.improved_agent(self, self.board)
+            
             if(k==12):
                 break
             while (self.total_hidden>0):
